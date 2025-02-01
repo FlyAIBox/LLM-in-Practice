@@ -1,0 +1,30 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  namespace: kserve-test
+  name: llma
+spec:
+  predictor:
+    containers:
+    - args:
+      - --port
+      - "8080"
+      - --model
+      - "/mnt/models"
+      - --max-model-len
+      - "2000"
+      env:
+      - name: STORAGE_URI
+        value: pvc://task-pv-claim/Llama2-Chinese-7b-Chat-ms
+      image: docker.io/vllm/vllm-openai:latest
+      imagePullPolicy: IfNotPresent
+      name: kserve-container
+      resources:
+        limits:
+          cpu: "10"
+          memory: 20Gi
+          nvidia.com/gpu: "1"
+        requests:
+          cpu: "10"
+          memory: 20Gi
+          nvidia.com/gpu: "1"
